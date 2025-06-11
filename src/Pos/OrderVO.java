@@ -45,7 +45,7 @@ public class OrderVO {
 		this.quantity = quantity;
 	}
 
-	public int gettableNum() {
+	public int getTableNum() {
 		return table_num;
 	}
 

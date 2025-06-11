@@ -74,7 +74,7 @@ public class PosMain {
 			for (int i = 0; i < orders.size(); i++) {
 			    OrderVO o = orders.get(i);
 			    System.out.println(o.getId() + " - 메뉴번호(" + o.getMenuId() + ") / 메뉴수량(" + o.getQuantity() + ") / 테이블번호(" 
-			                       + o.gettableNum() + ")");
+			                       + o.getTableNum() + ")");
 			}
 			System.out.print("\n[주문 / 결제 번호를 입력해주세요]        * 0번 상위메뉴\n주문 / 결제 번호 : ");
 			int sub = sc.nextInt();
@@ -154,6 +154,7 @@ public class PosMain {
 			case 1:
 				System.out.println("\n날짜 ..............................................................");
 				System.out.println("위치 : 홈 > 매출 > 날짜");
+				sc.nextLine();
 				System.out.print("날   짜 : ");
 				String date = sc.nextLine(); // 날짜 입력 (실제로는 날짜 입력 가능)
 				
@@ -165,6 +166,7 @@ public class PosMain {
 				System.out.println("위치 : 홈 > 매출 > 분야");
 				System.out.print("날   짜 : ");
 				date = sc.nextLine(); // 날짜 입력 (실제로는 날짜 입력 가능)
+				sc.nextLine();
 				List<CategoryVO> categories = CategoryDAO.getAllCategories();
 				for (int i = 0; i < categories.size(); i++) {
 				    CategoryVO c = categories.get(i);

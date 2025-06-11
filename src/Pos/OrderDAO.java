@@ -257,7 +257,7 @@ public class OrderDAO {
 
         try {
             String query = "SELECT SUM(o.quantity * m.price) AS total " +
-                           "FROM orders o JOIN menu m ON o.menu_id = m.id " +
+                           "FROM orders o JOIN menu m ON o.menu_id = m.menu_id " +
                            "WHERE o.ispaid = TRUE";
             pstmt = conn.prepareStatement(query);
             rs = pstmt.executeQuery();
@@ -280,7 +280,7 @@ public class OrderDAO {
 
         try {
             String query = "SELECT SUM(o.quantity * m.price) AS total " +
-                           "FROM orders o JOIN menu m ON o.menu_id = m.id " +
+                           "FROM orders o JOIN menu m ON o.menu_id = m.menu_id " +
                            "WHERE o.ispaid = TRUE AND m.category_id = ?";
             pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, categoryId);

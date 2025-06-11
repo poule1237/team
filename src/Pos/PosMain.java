@@ -27,6 +27,7 @@ public class PosMain {
 				case 1:
 					orderPaymentMenu(sc);
 					break;
+					/*
 				case 2:
 					showSalesMenu(sc);
 					break;
@@ -36,6 +37,7 @@ public class PosMain {
 				case 4:
 					categoryManagementMenu(sc);
 					break;
+					*/
 				default:
 					System.out.println("잘못된 입력입니다. 다시 입력해주세요.");
 				}
@@ -77,6 +79,7 @@ public class PosMain {
 				System.out.println("\n등록 ..............................................................");
 				System.out.println("위치 : 홈 > 주문 / 결제 > 등록");
 
+				/*
 				// 현재 등록된 메뉴 목록 출력
 				List<MenuVO> menus = MenuDAO.getAllMenus();
 				System.out.println("\n<메뉴>");
@@ -84,6 +87,7 @@ public class PosMain {
 					System.out.println(m.getId() + " - " + m.getName() + " (" + m.getPrice() + "원)");
 				}
 
+*/
 				System.out.println("");
 				System.out.print("1. 메뉴번호 : ");
 				int menuId = nextInt(sc);
@@ -109,7 +113,7 @@ public class PosMain {
 				System.out.print("[결제 번호를 입력해주세요]        * 0번 상위메뉴\n위치 : 홈 > 주문 / 결제 > 결제\n결제 번호 : ");
 				int pay = nextInt(sc);
 				if (pay == 0)
-					continue;
+					break;
 				if (pay == 1) {
 					System.out.print("1. 테이블번호 : ");
 					int table = nextInt(sc);
@@ -120,6 +124,8 @@ public class PosMain {
 					int orderId = nextInt(sc);
 					OrderDAO.payOrder(orderId);
 					System.out.println("<결제되었습니다.>");
+				}else {
+		            System.out.println("<존재하지 않는 주문번호입니다.>");
 				}
 				break;
 			default:
@@ -127,7 +133,7 @@ public class PosMain {
 			}
 		}
 	}
-	
+	/*
 	// 매출 메뉴
 	static void showSalesMenu(Scanner sc) throws SQLException {
 		while (true) {
@@ -178,7 +184,7 @@ public class PosMain {
 						+ m.getPrice() + ")");
 			}
 			System.out.print("\n[메뉴 번호를 입력해주세요]        * 0번 상위메뉴\n메뉴 번호 : ");
-			int sub = readInt(sc);
+			int sub = nextInt(sc);
 			if (sub == 0)
 				break;
 			switch (sub) {
@@ -279,8 +285,10 @@ public class PosMain {
 				break;
 			default:
 				System.out.println("잘못된 입력입니다.");
+				
 			}
 		}
 		
 	}
+	*/
 }

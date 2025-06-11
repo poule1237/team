@@ -1,7 +1,6 @@
 package Pos;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -66,7 +65,8 @@ public class PosMain {
 			System.out.println("      1. 등록                   2. 삭제                   3. 결제");
 			System.out.println("--------------------------------------------------------------------");
 			System.out.println("<주문현황>");
-			List<OrderVO> orders = OrderDAO.getAllOrders();
+			OrderDAO orderDAO = new OrderDAO();
+			List<OrderVO> orders = orderDAO.getAllOrders();
 			for (OrderVO o : orders) {
 				System.out.println(o.getId() + " - 메뉴번호(" + o.getMenuId() + ") / 메뉴수량(" + o.getQuantity() + ") / 테이블번호("
 						+ o.gettableNum() + ")");
@@ -94,7 +94,7 @@ public class PosMain {
 				int quantity = nextInt(sc);
 				System.out.print("3. 테이블번호 : ");
 				int tableNum = nextInt(sc);
-				OrderDAO.addOrder(menuId, quantity, tableNum);
+				orderDAO.addOrder(menuId, quantity, tableNum);
 				System.out.println("<주문되었습니다.>");
 				break;
 			case 2:
@@ -102,7 +102,7 @@ public class PosMain {
 				System.out.println("위치 : 홈 > 주문 / 결제 > 삭제");
 				System.out.print("1. 주문번호 : ");
 				int delId = nextInt(sc);
-				OrderDAO.deleteOrder(delId);
+				orderDAO.deleteOrder(delId);
 				System.out.println("<주문 취소되었습니다.>");
 				break;
 			case 3:
@@ -116,12 +116,12 @@ public class PosMain {
 				if (pay == 1) {
 					System.out.print("1. 테이블번호 : ");
 					int table = nextInt(sc);
-					OrderDAO.payTable(table);
+					orderDAO.payTable(table);
 					System.out.println("<결제되었습니다.>");
 				} else if (pay == 2) {
 					System.out.print("1. 주문번호 : ");
 					int orderId = nextInt(sc);
-					OrderDAO.payOrder(orderId);
+					orderDAO.payOrder(orderId);
 					System.out.println("<결제되었습니다.>");
 				} else {
 					System.out.println("<존재하지 않는 주문번호입니다.>");
@@ -149,7 +149,8 @@ public class PosMain {
 				System.out.println("위치 : 홈 > 매출 > 날짜");
 				System.out.print("날   짜 : ");
 				String date = sc.nextLine(); // 날짜 입력 (실제로는 날짜 입력 가능)
-				int total = OrderDAO.getTotalSales();
+				OrderDAO orderDAO = new OrderDAO();
+				int total = orderDAO.getTotalSales();
 				System.out.println("매출액 : " + total + "원");
 				break;
 			case 2:
@@ -159,6 +160,7 @@ public class PosMain {
 				date = sc.nextLine(); // 날짜 입력 (실제로는 날짜 입력 가능)
 				List<CategoryVO> categories = CategoryDAO.getAllCategories();
 				for (CategoryVO c : categories) {
+					OrderDAO OrderDAO = new OrderDAO();
 					int sales = OrderDAO.getSalesByCategory(c.getId());
 					System.out.println("카테고리(" + c.getId() + ") : " + sales + "원");
 				}

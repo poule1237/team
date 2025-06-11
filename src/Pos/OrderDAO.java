@@ -67,7 +67,7 @@ public class OrderDAO {
         this.connect();
 
         try {
-            String query = "SELECT * FROM orders";
+        	String query = "SELECT * FROM orders WHERE ispaid = FALSE";
             pstmt = conn.prepareStatement(query);
             rs = pstmt.executeQuery();
 
@@ -93,13 +93,14 @@ public class OrderDAO {
     
     
     // 테이블별 주문 조회
+    
     public List<OrderVO> selectOrdersByTable(int tableNum) {
         List<OrderVO> orderList = new ArrayList<>();
         
         this.connect();
 
         try {
-            String query = "SELECT * FROM orders WHERE table_num = ?";
+        	String query = "SELECT * FROM orders WHERE ispaid = FALSE";
             pstmt = conn.prepareStatement(query);
             pstmt.setInt(1, tableNum);
             rs = pstmt.executeQuery();
@@ -121,6 +122,8 @@ public class OrderDAO {
         close();
         return orderList;
     }
+
+   
 
     // 결제 여부별 주문 조회
     public List<OrderVO> selectOrdersByPaid(boolean isPaid) {
@@ -308,6 +311,6 @@ public class OrderDAO {
     }
 
 
-	
+    UPDATE orders SET ispaid = 0 WHERE ispaid IS NULL;
 	}
 

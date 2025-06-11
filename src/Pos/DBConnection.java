@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
-public class OrderDB {
+public class DBConnection {
 
 	// 데이터베이스 연결을 담당하는 클래스
 	    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";

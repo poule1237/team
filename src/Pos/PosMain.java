@@ -5,8 +5,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class PosMain {
+	
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
+		
 		while (true) {
 			System.out.println("\n********************************************************************");
 			System.out.println("                           프로그램 시작                        ");

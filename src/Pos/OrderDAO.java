@@ -42,7 +42,8 @@ public class OrderDAO {
     // 주문 등록
     public int insertOrder(int menuId, int quantity, int tableNum) {
         int count = -1;
-        connect();
+        
+        this.connect();
 
         try {
             String query = "INSERT INTO orders (menu_id, quantity, table_num) VALUES (?, ?, ?)";
@@ -55,14 +56,15 @@ public class OrderDAO {
             System.out.println("error: " + e);
         }
 
-        close();
+        this.close();
         return count;
     }
 
     // 주문 전체 조회
     public List<OrderVO> selectAllOrders() {
         List<OrderVO> orderList = new ArrayList<>();
-        connect();
+        
+        this.connect();
 
         try {
             String query = "SELECT * FROM orders";
@@ -83,7 +85,7 @@ public class OrderDAO {
             System.out.println("error: " + e.getMessage());
         }
 
-        close();
+        this.close();
         return orderList;
     }
 
@@ -93,7 +95,8 @@ public class OrderDAO {
     // 테이블별 주문 조회
     public List<OrderVO> selectOrdersByTable(int tableNum) {
         List<OrderVO> orderList = new ArrayList<>();
-        connect();
+        
+        this.connect();
 
         try {
             String query = "SELECT * FROM orders WHERE table_num = ?";
@@ -122,7 +125,9 @@ public class OrderDAO {
     // 결제 여부별 주문 조회
     public List<OrderVO> selectOrdersByPaid(boolean isPaid) {
         List<OrderVO> orderList = new ArrayList<>();
-        connect();
+        
+        this.connect();
+        
 
         try {
             String query = "SELECT * FROM orders WHERE ispaid = ?";
@@ -151,7 +156,8 @@ public class OrderDAO {
     // 주문 1건 조회
     public OrderVO selectOrder(int orderId) {
         OrderVO order = null;
-        connect();
+        
+        this.connect();
 
         try {
             String query = "SELECT * FROM orders WHERE order_id = ?";
@@ -172,14 +178,14 @@ public class OrderDAO {
             System.out.println("error: " + e.getMessage());
         }
 
-        close();
+        this.close();
         return order;
     }
 
     // 주문 수정
     public int updateOrder(int orderId, int quantity, int tableNum) {
         int count = -1;
-        connect();
+        this.connect();
 
         try {
             String query = "UPDATE orders SET quantity = ?, table_num = ? WHERE order_id = ?";
@@ -192,14 +198,14 @@ public class OrderDAO {
             System.out.println("error: " + e.getMessage());
         }
 
-        close();
+        this.close();
         return count;
     }
 
     // 주문 삭제
     public int deleteOrder(int orderId) {
         int count = -1;
-        connect();
+        this.connect();
 
         try {
             String query = "DELETE FROM orders WHERE order_id = ?";
@@ -210,15 +216,15 @@ public class OrderDAO {
             System.out.println("error: " + e.getMessage());
         }
 
-        close();
+        this.close();
         return count;
     }
 
     // 주문 결제 처리 (ispaid 업데이트 방식 사용 권장)
     public int payOrder(int orderId) {
         int count = -1;
-        connect();
-
+        this.connect();
+        
         try {
             String query = "UPDATE orders SET ispaid = TRUE WHERE order_id = ?";
             pstmt = conn.prepareStatement(query);
@@ -228,14 +234,14 @@ public class OrderDAO {
             System.out.println("error: " + e.getMessage());
         }
 
-        close();
+        this.close();
         return count;
     }
 
     // 테이블 전체 결제 처리
     public int payTable(int tableNum) {
         int count = -1;
-        connect();
+        this.connect();
 
         try {
             String query = "UPDATE orders SET ispaid = TRUE WHERE table_num = ?";
@@ -246,14 +252,14 @@ public class OrderDAO {
             System.out.println("error: " + e.getMessage());
         }
 
-        close();
+        this.close();
         return count;
     }
 
     // 총 매출 조회
     public int selectTotalSales() {
         int total = 0;
-        connect();
+        this.connect();
 
         try {
             String query = "SELECT SUM(o.quantity * m.price) AS total " +
@@ -269,14 +275,14 @@ public class OrderDAO {
             System.out.println("error: " + e.getMessage());
         }
 
-        close();
+        this.close();
         return total;
     }
 
     // 카테고리별 매출 조회
     public int selectSalesByCategory(int categoryId) {
         int total = 0;
-        connect();
+        this.connect();
 
         try {
             String query = "SELECT SUM(o.quantity * m.price) AS total " +
@@ -293,14 +299,14 @@ public class OrderDAO {
             System.out.println("error: " + e.getMessage());
         }
 
-        close();
+        this.close();
         return total;
     }
 
-	public void addOrder(int menuId, int quantity, int tableNum) {
-		
-		
-	}
+    public void addOrder(int menuId, int quantity, int tableNum) {
+        insertOrder(menuId, quantity, tableNum);
+    }
+
 
 	
 	}

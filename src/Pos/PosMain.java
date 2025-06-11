@@ -17,7 +17,7 @@ public class PosMain {
 			System.out.println("      1. 주문 / 결제      2. 매출      3. 메뉴      4. 카테고리");
 			System.out.println("====================================================================");
 			System.out.print("[시작메뉴 번호를 입력해주세요]        * 0번 프로그램 종료\n시작메뉴 번호 : ");
-			int choice = nextInt(sc);
+			int choice = sc.nextInt();
 
 			try {
 				switch (choice) {
@@ -62,19 +62,22 @@ public class PosMain {
 
 	// 주문/결제 메뉴
 	static void orderPaymentMenu(Scanner sc) throws SQLException {
+		
+		OrderDAO orderDAO = new OrderDAO();
+		
 		while (true) {
 			System.out.println("\n주문 / 결제 --------------------------------------------------------");
 			System.out.println("      1. 등록                   2. 삭제                   3. 결제");
 			System.out.println("--------------------------------------------------------------------");
 			System.out.println("<주문현황>");
-			OrderDAO orderDAO = new OrderDAO();
-			List<OrderVO> orders = orderDAO.getAllOrders();
-			for (OrderVO o : orders) {
-				System.out.println(o.getId() + " - 메뉴번호(" + o.getMenuId() + ") / 메뉴수량(" + o.getQuantity() + ") / 테이블번호("
-						+ o.gettableNum() + ")");
+			List<OrderVO> orders = orderDAO.selectAllOrders();
+			for (int i = 0; i < orders.size(); i++) {
+			    OrderVO o = orders.get(i);
+			    System.out.println(o.getId() + " - 메뉴번호(" + o.getMenuId() + ") / 메뉴수량(" + o.getQuantity() + ") / 테이블번호(" 
+			                       + o.gettableNum() + ")");
 			}
 			System.out.print("\n[주문 / 결제 번호를 입력해주세요]        * 0번 상위메뉴\n주문 / 결제 번호 : ");
-			int sub = nextInt(sc);
+			int sub = sc.nextInt();
 			if (sub == 0)
 				break;
 			switch (sub) {
@@ -85,17 +88,18 @@ public class PosMain {
 				// 현재 등록된 메뉴 목록 출력
 				List<MenuVO> menus = MenuDAO.getAllMenus();
 				System.out.println("\n<메뉴>");
-				for (MenuVO m : menus) {
+				for (int i = 0; i < menus.size(); i++) {
+					MenuVO m = menus.get(i);
 					System.out.println(m.getId() + " - " + m.getName() + " (" + m.getPrice() + "원)");
 				}
 
 				System.out.println("");
 				System.out.print("1. 메뉴번호 : ");
-				int menuId = nextInt(sc);
+				int menuId = sc.nextInt();
 				System.out.print("2. 메뉴수량 : ");
-				int quantity = nextInt(sc);
+				int quantity = sc.nextInt();
 				System.out.print("3. 테이블번호 : ");
-				int tableNum = nextInt(sc);
+				int tableNum = sc.nextInt();
 				orderDAO.addOrder(menuId, quantity, tableNum);
 				System.out.println("<주문되었습니다.>");
 				break;
@@ -103,7 +107,7 @@ public class PosMain {
 				System.out.println("\n삭제 ..............................................................");
 				System.out.println("위치 : 홈 > 주문 / 결제 > 삭제");
 				System.out.print("1. 주문번호 : ");
-				int delId = nextInt(sc);
+				int delId = sc.nextInt();
 				orderDAO.deleteOrder(delId);
 				System.out.println("<주문 취소되었습니다.>");
 				break;
@@ -112,17 +116,17 @@ public class PosMain {
 				System.out.println("      1. 전체결제                    2. 개별결제");
 				System.out.println(".....................................................................");
 				System.out.print("[결제 번호를 입력해주세요]        * 0번 상위메뉴\n위치 : 홈 > 주문 / 결제 > 결제\n결제 번호 : ");
-				int pay = nextInt(sc);
+				int pay = sc.nextInt();
 				if (pay == 0)
 					break;
 				if (pay == 1) {
 					System.out.print("1. 테이블번호 : ");
-					int table = nextInt(sc);
+					int table = sc.nextInt();
 					orderDAO.payTable(table);
 					System.out.println("<결제되었습니다.>");
 				} else if (pay == 2) {
 					System.out.print("1. 주문번호 : ");
-					int orderId = nextInt(sc);
+					int orderId = sc.nextInt();
 					orderDAO.payOrder(orderId);
 					System.out.println("<결제되었습니다.>");
 				} else {
@@ -137,12 +141,13 @@ public class PosMain {
 
 	// 매출 메뉴
 	static void showSalesMenu(Scanner sc) throws SQLException {
+		OrderDAO orderDAO = new OrderDAO();
 		while (true) {
 			System.out.println("\n매출 ---------------------------------------------------------------");
 			System.out.println("      1. 날짜                     2. 분야                ");
 			System.out.println("--------------------------------------------------------------------");
 			System.out.print("[매출 번호를 입력해주세요]        * 0번 상위메뉴\n매출 번호 : ");
-			int sub = nextInt(sc);
+			int sub = sc.nextInt();
 			if (sub == 0)
 				break;
 			switch (sub) {
@@ -151,8 +156,8 @@ public class PosMain {
 				System.out.println("위치 : 홈 > 매출 > 날짜");
 				System.out.print("날   짜 : ");
 				String date = sc.nextLine(); // 날짜 입력 (실제로는 날짜 입력 가능)
-				OrderDAO orderDAO = new OrderDAO();
-				int total = orderDAO.getTotalSales();
+				
+				int total = orderDAO.selectTotalSales();
 				System.out.println("매출액 : " + total + "원");
 				break;
 			case 2:
@@ -161,10 +166,10 @@ public class PosMain {
 				System.out.print("날   짜 : ");
 				date = sc.nextLine(); // 날짜 입력 (실제로는 날짜 입력 가능)
 				List<CategoryVO> categories = CategoryDAO.getAllCategories();
-				for (CategoryVO c : categories) {
-					OrderDAO OrderDAO = new OrderDAO();
-					int sales = OrderDAO.getSalesByCategory(c.getId());
-					System.out.println("카테고리(" + c.getId() + ") : " + sales + "원");
+				for (int i = 0; i < categories.size(); i++) {
+				    CategoryVO c = categories.get(i);
+				    int sales = orderDAO.selectSalesByCategory(c.getId());
+				    System.out.println("카테고리(" + c.getId() + ") : " + sales + "원");
 				}
 				break;
 			default:

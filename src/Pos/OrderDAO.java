@@ -310,6 +310,7 @@ public class OrderDAO {
         insertOrder(menuId, quantity, tableNum);
     }
 
+    MODIFY COLUMN ispaid TINYINT(1) NOT NULL DEFAULT 0;
 
     UPDATE orders SET ispaid = 0 WHERE ispaid IS NULL;
 	}

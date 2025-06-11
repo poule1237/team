@@ -112,29 +112,35 @@ public class PosMain {
 				System.out.println("<주문 취소되었습니다.>");
 				break;
 			case 3:
-				System.out.println("\n결제 ................................................................");
-				System.out.println("      1. 전체결제                    2. 개별결제");
-				System.out.println(".....................................................................");
-				System.out.print("[결제 번호를 입력해주세요]        * 0번 상위메뉴\n위치 : 홈 > 주문 / 결제 > 결제\n결제 번호 : ");
-				int pay = sc.nextInt();
-				if (pay == 0)
-					break;
-				if (pay == 1) {
-					System.out.print("1. 테이블번호 : ");
-					int table = sc.nextInt();
-					orderDAO.payTable(table);
-					System.out.println("<결제되었습니다.>");
-				} else if (pay == 2) {
-					System.out.print("1. 주문번호 : ");
-					int orderId = sc.nextInt();
-					orderDAO.payOrder(orderId);
-					System.out.println("<결제되었습니다.>");
-				} else {
-					System.out.println("<존재하지 않는 주문번호입니다.>");
-				}
-				break;
-			default:
-				System.out.println("잘못된 입력입니다.");
+			    System.out.println("\n결제 ................................................................");
+			    System.out.println("      1. 전체결제                    2. 개별결제");
+			    System.out.println(".....................................................................");
+			    System.out.print("[결제 번호를 입력해주세요]        * 0번 상위메뉴\n위치 : 홈 > 주문 / 결제 > 결제\n결제 번호 : ");
+			    int pay = sc.nextInt();
+			    if (pay == 0)
+			        break;
+			    if (pay == 1) {
+			        System.out.print("1. 테이블번호 : ");
+			        int table = sc.nextInt();
+			        int result = orderDAO.payTable(table); 
+			        if (result > 0) {
+			            System.out.println("<결제되었습니다.>");
+			        } else {
+			            System.out.println("<결제할 주문이 존재하지 않습니다.>");
+			        }
+			    } else if (pay == 2) {
+			        System.out.print("1. 주문번호 : ");
+			        int orderId = sc.nextInt();
+			        int result = orderDAO.payOrder(orderId); 
+			        if (result > 0) {
+			            System.out.println("<결제되었습니다.>");
+			        } else {
+			            System.out.println("<존재하지 않는 주문번호입니다.>");
+			        }
+			    } else {
+			        System.out.println("<잘못된 입력입니다.>");
+			    }
+			    break;
 			}
 		}
 	}

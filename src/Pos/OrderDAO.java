@@ -1,156 +1,188 @@
-package pos;
+package Pos;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class orderdao {
+//주문/결제 데이터베이스 접근을 담당하는 클래스
+public class OrderDAO {
+	// 주문 등록
+	public static void addOrder(int menuId, int quantity, int tableNum) throws SQLException {
+		String query = "insert into orders ";
+		query += "(menu_id, quantity, table_num)";
+		query += " values" + " (?, ?, ?)";
 
-    // 주문 등록
-    public static void addorder(int menuid, int quantity, int tablenum) throws SQLException {
-        String query = "insert into orders";
-        query += " (menu_id, quantity, table_num)";
-        query += " values (?, ?, ?)";
-        try (Connection conn = orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, menuid);
-            pstmt.setInt(2, quantity);
-            pstmt.setInt(3, tablenum);
-            pstmt.executeUpdate();
-        }
-    }
+		try (Connection conn = OrderDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, menuId); // 메뉴번호
+			pstmt.setInt(2, quantity); // 수량
+			pstmt.setInt(3, tableNum); // 테이블번호
+			pstmt.executeUpdate();
+		}
+	}
 
-    // 전체 주문 조회
-    public static List<ordervo> getallorders() throws SQLException {
-        List<ordervo> list = new ArrayList<>();
-        String query = "select * from orders";
-        try (Connection conn = orderdb.getconnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            while (rs.next()) {
-                list.add(new ordervo(rs.getInt("order_id"), rs.getInt("menu_id"),
-                        rs.getInt("quantity"), rs.getInt("table_num"), rs.getBoolean("is_paid")));
-            }
-        }
-        return list;
-    }
+	// 주문 조회 (전체)
+	public static List<OrderVO> getAllOrders() throws SQLException {
+		List<OrderVO> list = new ArrayList<>();
+		String query = "select * from orders";
 
-    // 테이블별 주문 조회
-    public static List<ordervo> getordersbytable(int tablenum) throws SQLException {
-        List<ordervo> list = new ArrayList<>();
-        String query = "select * from orders";
-        query += " where table_num = ?";
-        try (Connection conn = orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, tablenum);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                list.add(new ordervo(rs.getInt("order_id"), rs.getInt("menu_id"),
-                        rs.getInt("quantity"), rs.getInt("table_num"), rs.getBoolean("is_paid")));
-            }
-        }
-        return list;
-    }
+		try (Connection conn = OrderDB.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(query)) {
 
-    // 결제 여부로 주문 조회
-    public static List<ordervo> getordersbypaid(boolean ispaid) throws SQLException {
-        List<ordervo> list = new ArrayList<>();
-        String query = "select * from orders";
-        query += " where is_paid = ?";
-        try (Connection conn = orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setBoolean(1, ispaid);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                list.add(new ordervo(rs.getInt("order_id"), rs.getInt("menu_id"),
-                        rs.getInt("quantity"), rs.getInt("table_num"), rs.getBoolean("is_paid")));
-            }
-        }
-        return list;
-    }
+			while (rs.next()) {
+				list.add(new OrderVO(rs.getInt("order_id"),
+						rs.getInt("menu_id"),
+						rs.getInt("quantity"),
+						rs.getInt("table_num"),
+						rs.getBoolean("is_paid")));
+			}
+		}
+		return list;
+	}
 
-    // 단일 주문 조회
-    public static ordervo getorder(int orderid) throws SQLException {
-        String query = "select * from orders";
-        query += " where order_id = ?";
-        try (Connection conn = orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, orderid);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return new ordervo(rs.getInt("order_id"), rs.getInt("menu_id"),
-                        rs.getInt("quantity"), rs.getInt("table_num"), rs.getBoolean("is_paid"));
-            }
-        }
-        return null;
-    }
+	// 주문 조회 (테이블별)
+	public static List<OrderVO> getOrdersByTable(int tableNum) throws SQLException {
+		List<OrderVO> list = new ArrayList<>();
+		String query = "select * from orders";
+		query += " where table_num = ?";
 
-    // 주문 수정
-    public static void updateorder(int orderid, int quantity, int tablenum) throws SQLException {
-        String query = "update orders set quantity = ?";
-        query += ", table_num = ?";
-        query += " where order_id = ?";
-        try (Connection conn = orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, quantity);
-            pstmt.setInt(2, tablenum);
-            pstmt.setInt(3, orderid);
-            pstmt.executeUpdate();
-        }
-    }
+		try (Connection conn = OrderDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, tableNum);
 
-    // 주문 삭제
-    public static void deleteorder(int orderid) throws SQLException {
-        String query = "delete from orders";
-        query += " where order_id = ?";
-        try (Connection conn = orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, orderid);
-            pstmt.executeUpdate();
-        }
-    }
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				list.add(new OrderVO(rs.getInt("oreder_id"),
+						rs.getInt("menu_id"), 
+						rs.getInt("quantity"),
+						rs.getInt("table_num"), 
+						rs.getBoolean("is_paid")));
+			}
+		}
+		return list;
+	}
 
-    // 주문 결제
-    public static void payorder(int orderid) throws SQLException {
-        String query = "delete from orders";
-        query += " where order_id = ?";
-        try (Connection conn = orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, orderid);
-            pstmt.executeUpdate();
-        }
-    }
+	// 주문 조회 (결제 여부별)
+	public static List<OrderVO> getOrdersByPaid(boolean isPaid) throws SQLException {
+		List<OrderVO> list = new ArrayList<>();
+		String query = "select * from orders where is_paid = ?";
 
-    // 테이블 전체 결제
-    public static void paytable(int tablenum) throws SQLException {
-        String query = "delete from orders";
-        query += " where table_num = ?";
-        try (Connection conn = Orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, tablenum);
-            pstmt.executeUpdate();
-        }
-    }
+		try (Connection conn = OrderDB.getConnection();PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setBoolean(1, isPaid);
+			ResultSet rs = pstmt.executeQuery();
 
-    // 전체 매출 조회
-    public static int gettotalsales() throws SQLException {
-        String query = "select sum(quantity *";
-        query += " (select price from menu where id = menu_id)) as total";
-        query += " from orders where is_paid = true";
-        try (Connection conn = orderdb.getconnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-            if (rs.next()) {
-                return rs.getInt("total");
-            }
-        }
-        return 0;
-    }
+			while (rs.next()) {
+				list.add(new OrderVO(rs.getInt("order_id"),
+						rs.getInt("menu_id"),
+						rs.getInt("quantity"),
+						rs.getInt("table_num"),
+						rs.getBoolean("is_paid")));
+			}
+		}
+		return list;
+	}
 
-    // 카테고리별 매출 조회
-    public static int getsalesbycategory(int categoryid) throws SQLException {
-        String query = "select sum(o.quantity * m.price) as total";
-        query += " from orders o join menu m on o.menu_id = m.id";
-        query += " where o.is_paid = true and m.category_id = ?";
-        try (Connection conn = orderdb.getconnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
-            pstmt.setInt(1, categoryid);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("total");
-            }
-        }
-        return 0;
-    }
+	// 주문 조회 (단일)
+	public static OrderVO getOrder(int order_id) throws SQLException {
+		String query = "select * from orders";
+				query += " where order_id = ?";
+		try (Connection conn = OrderDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, order_id);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return new OrderVO(rs.getInt("order_id"),
+						rs.getInt("menu_id"),
+						rs.getInt("quantity"),
+						rs.getInt("table_num"),
+						rs.getBoolean("is_paid"));
+			}
+		}
+		return null;
+	}
+
+	// 주문 수정 (수량, 테이블 등)
+	public static void updateOrder(int order_id, int quantity, int tableNum) throws SQLException {
+		String query = "update orders set ";
+				query += "quantity=?,";
+				query += " table_no=? ";
+				query += "WHERE id=?";
+
+		try (Connection conn = OrderDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, quantity);
+			pstmt.setInt(2, tableNum);
+			pstmt.setInt(3, order_id);
+			pstmt.executeUpdate();
+		}
+	}
+
+	// 주문 삭제
+	public static void deleteOrder(int order_id) throws SQLException {
+		String query = "delete from orders";
+				query += " where order_id = ?";
+
+		try (Connection conn = OrderDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, order_id);
+			pstmt.executeUpdate();
+		}
+	}
+
+	// 주문 결제 (매출 처리)
+	public static void payOrder(int order_id) throws SQLException {
+		String query = "delete from orders ";
+				query += "where id = ?";
+
+		try (Connection conn = OrderDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, order_id);
+			pstmt.executeUpdate();
+		}
+	}
+
+	// 테이블 전체 결제(주문 삭제 방식)
+	public static void payTable(int tableNum) throws SQLException {
+		String query = "delete from orders";
+				query += " where table_num = ?";
+
+		try (Connection conn = OrderDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, tableNum);
+			pstmt.executeUpdate();
+		}
+	}
+
+	// 매출 조회 (결제된 주문만)
+	public static int getTotalSales() throws SQLException {
+		String query = "select sum(quantity * (select price from menu where id = menu_id)) as total";
+				query += " from orders where is_paid = TRUE";
+
+		try (Connection conn = OrderDB.getConnection();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(query)) {
+
+			if (rs.next()) {
+				return rs.getInt("total");
+			}
+		}
+		return 0;
+	}
+
+	// 카테고리별 매출 조회
+	public static int getSalesByCategory(int categoryId) throws SQLException {
+		String query = "select sum(o.quantity * m.price) as total";
+				query += " from orders o";
+				query += " join menu m ON o.menu_id = m.id";
+				query += " where o.is_paid = TRUE AND m.category_id = ?";
+
+		try (Connection conn = OrderDB.getConnection(); PreparedStatement pstmt = conn.prepareStatement(query)) {
+			pstmt.setInt(1, categoryId);
+			ResultSet rs = pstmt.executeQuery();
+
+			if (rs.next()) {
+				return rs.getInt("total");
+			}
+		}
+		return 0;
+	}
 }
